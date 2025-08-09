@@ -59,8 +59,22 @@ def create_features(pickup_datetime, pickup_coords, dropoff_coords, passenger_co
     del input_data["dropoff_latitude"]
     del input_data["dropoff_longitude"]
 
-    # Convert the data into a DataFrame format that the model expects
-    return pd.DataFrame([input_data])
+    # Define the exact order of features expected by the model
+    feature_order = [
+        "passenger_count",
+        "distance_km",
+        "year",
+        "month",
+        "day",
+        "day_of_week",
+        "hour",
+        "is_rush_hour",
+        "is_night",
+        "is_weekend"
+    ]
+
+    # Convert the data into a DataFrame with the correct column order
+    return pd.DataFrame([input_data])[feature_order]
 
 # --- Part 3: Streamlit UI Components ---
 st.title("Uber Fare Prediction")
@@ -113,7 +127,7 @@ if submit_button:
             "hour"
         ]
 
-        # Apply the same scaling transformation
+        # Apply the same scaling transformation to only the numeric features
         processed_data[numeric_features] = scaler.transform(processed_data[numeric_features])
         
         # Make the prediction
